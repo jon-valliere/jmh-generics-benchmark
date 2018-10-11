@@ -29,11 +29,11 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sample;
+package bench;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
-public class MyBenchmark
+public class CastingBenchmark
 {
 	@Benchmark
 	public void uncheckedMethod()
