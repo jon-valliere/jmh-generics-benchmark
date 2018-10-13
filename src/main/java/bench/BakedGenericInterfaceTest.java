@@ -5,7 +5,7 @@ import org.openjdk.jmh.annotations.Benchmark;
 /**
  * Tests against a Type which has fully baked a Generic Abstract Method
  */
-public class BakedGenericAbstractTest
+public class BakedGenericInterfaceTest
 {
 	@Benchmark
 	public void testExplicit()
@@ -32,7 +32,7 @@ public class BakedGenericAbstractTest
 	@Benchmark
 	public void testChecked()
 	{
-		final AbstractType<BaseType> x = this.createCheckedReceiver();
+		final AbstractInterface<BaseType> x = this.createCheckedReceiver();
 
 		final BaseType y = this.createObject();
 
@@ -54,7 +54,7 @@ public class BakedGenericAbstractTest
 	@Benchmark
 	public void testUnchecked()
 	{
-		final AbstractType x = this.createUncheckedReceiver();
+		final AbstractInterface x = this.createUncheckedReceiver();
 
 		final Object y = this.createObject();
 
@@ -76,7 +76,7 @@ public class BakedGenericAbstractTest
 	@Benchmark
 	public void testBaked()
 	{
-		final BakedType x = this.createBakedReceiver();
+		final BakedInterface x = this.createBakedReceiver();
 
 		final BaseType y = this.createObject();
 
@@ -105,22 +105,22 @@ public class BakedGenericAbstractTest
 		return new ReceiverType();
 	}
 
-	protected AbstractType<BaseType> createCheckedReceiver()
+	protected AbstractInterface<BaseType> createCheckedReceiver()
 	{
 		return new ReceiverType();
 	}
 
-	protected AbstractType createUncheckedReceiver()
+	protected AbstractInterface createUncheckedReceiver()
 	{
 		return new ReceiverType();
 	}
 
-	protected BakedType createBakedReceiver()
+	protected BakedInterface createBakedReceiver()
 	{
 		return new ReceiverType();
 	}
 
-	static private class ReceiverType extends BakedType
+	static private class ReceiverType extends BaseType implements BakedInterface
 	{
 		@Override
 		public BaseType foo(final BaseType value)
@@ -136,18 +136,14 @@ public class BakedGenericAbstractTest
 		}
 	}
 
-	/**
-	 * By adding a second abstract class in the inheritance, the
-	 * performance drops by an order of magnitude.
-	 */
-	static private abstract class BakedType extends AbstractType<BaseType>
+	static private interface BakedInterface extends AbstractInterface<BaseType>
 	{
 
 	}
 
-	static private abstract class AbstractType<X> extends BaseType
+	static private interface AbstractInterface<X>
 	{
-		abstract public X foo(X value);
+		X foo(X value);
 	}
 
 	static private class BaseType

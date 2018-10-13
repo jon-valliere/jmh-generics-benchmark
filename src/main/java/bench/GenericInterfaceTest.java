@@ -5,7 +5,7 @@ import org.openjdk.jmh.annotations.Benchmark;
 public class GenericInterfaceTest
 {
 	@Benchmark
-	public void testChecked()
+	public void testCheckedType()
 	{
 		final ReceiverType<BaseType> x = this.createCheckedReceiver();
 
@@ -27,9 +27,53 @@ public class GenericInterfaceTest
 	}
 
 	@Benchmark
-	public void testUnchecked()
+	public void testUncheckedType()
 	{
 		final ReceiverType x = this.createUncheckedReceiver();
+
+		final Object y = this.createObject();
+
+		Object z = null;
+
+		for (int i = 0; i != 1_000_000; i++)
+		{
+			if (z == y)
+			{
+				z = x.foo(y);
+			}
+			else
+			{
+				z = x.foo(y);
+			}
+		}
+	}
+
+	@Benchmark
+	public void testCheckedInterface()
+	{
+		final ReceiverInterface<BaseType> x = this.createCheckedInterface();
+
+		final BaseType y = this.createObject();
+
+		BaseType z = null;
+
+		for (int i = 0; i != 1_000_000; i++)
+		{
+			if (z == y)
+			{
+				z = x.foo(y);
+			}
+			else
+			{
+				z = x.foo(y);
+			}
+		}
+	}
+
+	@Benchmark
+	public void testUncheckedInterface()
+	{
+		final ReceiverInterface x = this.createUncheckedInterface();
 
 		final Object y = this.createObject();
 
@@ -59,6 +103,16 @@ public class GenericInterfaceTest
 	}
 
 	protected ReceiverType createUncheckedReceiver()
+	{
+		return new ReceiverType<BaseType>();
+	}
+
+	protected ReceiverInterface<BaseType> createCheckedInterface()
+	{
+		return new ReceiverType<BaseType>();
+	}
+
+	protected ReceiverInterface createUncheckedInterface()
 	{
 		return new ReceiverType<BaseType>();
 	}
