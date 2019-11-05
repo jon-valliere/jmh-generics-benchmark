@@ -125,7 +125,7 @@ public class BakedGenericInterfaceTest
 		@Override
 		public BaseType foo(final BaseType value)
 		{
-			if (value == this)
+			if (value.id == this.id)
 			{
 				return value;
 			}
@@ -148,6 +148,6 @@ public class BakedGenericInterfaceTest
 
 	static private class BaseType
 	{
-
+		public int id = 0;
 	}
 }

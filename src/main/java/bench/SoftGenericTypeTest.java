@@ -5,7 +5,7 @@ import org.openjdk.jmh.annotations.Benchmark;
 /**
  * Tests against a standard generic class; similar to a collection
  */
-public class GenericTypeTest
+public class SoftGenericTypeTest
 {
 	@Benchmark
 	public void testChecked()
@@ -83,6 +83,6 @@ public class GenericTypeTest
 
 	static private class BaseType
 	{
-
+		public int id = 0;
 	}
 }

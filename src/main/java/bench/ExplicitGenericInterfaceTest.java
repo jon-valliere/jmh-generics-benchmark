@@ -95,7 +95,7 @@ public class ExplicitGenericInterfaceTest
 		@Override
 		public BaseType foo(final BaseType value)
 		{
-			if (value == this)
+			if (value.id == this.id)
 			{
 				return value;
 			}
@@ -113,6 +113,6 @@ public class ExplicitGenericInterfaceTest
 
 	static private class BaseType
 	{
-
+		public int id = 0;
 	}
 }

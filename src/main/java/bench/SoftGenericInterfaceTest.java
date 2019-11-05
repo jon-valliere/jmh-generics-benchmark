@@ -2,7 +2,7 @@ package bench;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
-public class GenericInterfaceTest
+public class SoftGenericInterfaceTest
 {
 	@Benchmark
 	public void testCheckedType()
@@ -140,6 +140,6 @@ public class GenericInterfaceTest
 
 	static private class BaseType
 	{
-
+		public int id = 0;
 	}
 }

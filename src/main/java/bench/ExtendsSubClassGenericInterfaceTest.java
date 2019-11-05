@@ -100,7 +100,7 @@ public class ExtendsSubClassGenericInterfaceTest
 		@Override
 		public SuperType foo(final SuperType value)
 		{
-			if (value == this)
+			if (value.id == this.id)
 			{
 				return value;
 			}
@@ -118,7 +118,7 @@ public class ExtendsSubClassGenericInterfaceTest
 
 	static private class BaseType
 	{
-
+		public int id = 0;
 	}
 
 	static private class SuperType extends BaseType

@@ -43,7 +43,7 @@ public class StrictTypeTest
 	{
 		public BaseType foo(final BaseType value)
 		{
-			if (value == this)
+			if (value.id == this.id)
 			{
 				return value;
 			}
@@ -56,6 +56,6 @@ public class StrictTypeTest
 
 	static private class BaseType
 	{
-
+		public int id = 0;
 	}
 }

@@ -76,7 +76,7 @@ public class StrictInterfaceTest
 		@Override
 		public BaseType foo(final BaseType value)
 		{
-			if (value == this)
+			if (value.id == this.id)
 			{
 				return value;
 			}
@@ -89,6 +89,6 @@ public class StrictInterfaceTest
 
 	static private class BaseType
 	{
-
+		public int id = 0;
 	}
 }
