@@ -1,11 +1,11 @@
-package bench;
+package bench.invoke;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
 /**
  * Tests against a Type which has fully baked a Generic Abstract Method
  */
-public class BakedGenericInterfaceTest
+public class BakedGenericInterfaceMultipleArgsTest
 {
 	@Benchmark
 	public void testExplicit()
@@ -20,11 +20,11 @@ public class BakedGenericInterfaceTest
 		{
 			if (z == y)
 			{
-				z = x.foo(y);
+				z = x.foo(y, y);
 			}
 			else
 			{
-				z = x.foo(y);
+				z = x.foo(y, y);
 			}
 		}
 	}
@@ -42,11 +42,11 @@ public class BakedGenericInterfaceTest
 		{
 			if (z == y)
 			{
-				z = x.foo(y);
+				z = x.foo(y, y);
 			}
 			else
 			{
-				z = x.foo(y);
+				z = x.foo(y, y);
 			}
 		}
 	}
@@ -64,11 +64,11 @@ public class BakedGenericInterfaceTest
 		{
 			if (z == y)
 			{
-				z = x.foo(y);
+				z = x.foo(y, y);
 			}
 			else
 			{
-				z = x.foo(y);
+				z = x.foo(y, y);
 			}
 		}
 	}
@@ -86,11 +86,11 @@ public class BakedGenericInterfaceTest
 		{
 			if (z == y)
 			{
-				z = x.foo(y);
+				z = x.foo(y, y);
 			}
 			else
 			{
-				z = x.foo(y);
+				z = x.foo(y, y);
 			}
 		}
 	}
@@ -123,9 +123,9 @@ public class BakedGenericInterfaceTest
 	static private class ReceiverType extends BaseType implements BakedInterface
 	{
 		@Override
-		public BaseType foo(final BaseType value)
+		public BaseType foo(final BaseType value, final BaseType bar)
 		{
-			if (value.id == this.id)
+			if (value.id == bar.id)
 			{
 				return value;
 			}
@@ -143,7 +143,7 @@ public class BakedGenericInterfaceTest
 
 	static private interface AbstractInterface<X>
 	{
-		X foo(X value);
+		X foo(X value, X bar);
 	}
 
 	static private class BaseType

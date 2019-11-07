@@ -1,11 +1,8 @@
-package bench;
+package bench.invoke;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
-/**
- * Tests against a Type which has fully baked a Generic Abstract Method
- */
-public class BakedGenericTypeTest
+public class ExplicitGenericInterfaceTest
 {
 	@Benchmark
 	public void testExplicit()
@@ -32,7 +29,7 @@ public class BakedGenericTypeTest
 	@Benchmark
 	public void testChecked()
 	{
-		final GenericType<BaseType> x = this.createCheckedReceiver();
+		final ReceiverInterface<BaseType> x = this.createCheckedReceiver();
 
 		final BaseType y = this.createObject();
 
@@ -54,33 +51,11 @@ public class BakedGenericTypeTest
 	@Benchmark
 	public void testUnchecked()
 	{
-		final GenericType x = this.createUncheckedReceiver();
+		final ReceiverInterface x = this.createUncheckedReceiver();
 
 		final Object y = this.createObject();
 
 		Object z = null;
-
-		for (int i = 0; i != 1_000_000; i++)
-		{
-			if (z == y)
-			{
-				z = x.foo(y);
-			}
-			else
-			{
-				z = x.foo(y);
-			}
-		}
-	}
-
-	@Benchmark
-	public void testBaked()
-	{
-		final BakedType x = this.createBakedReceiver();
-
-		final BaseType y = this.createObject();
-
-		BaseType z = null;
 
 		for (int i = 0; i != 1_000_000; i++)
 		{
@@ -100,27 +75,22 @@ public class BakedGenericTypeTest
 		return new BaseType();
 	}
 
+	protected ReceiverInterface<BaseType> createCheckedReceiver()
+	{
+		return new ReceiverType();
+	}
+
+	protected ReceiverInterface createUncheckedReceiver()
+	{
+		return new ReceiverType();
+	}
+
 	protected ReceiverType createExplicitReceiver()
 	{
 		return new ReceiverType();
 	}
 
-	protected GenericType<BaseType> createCheckedReceiver()
-	{
-		return new ReceiverType();
-	}
-
-	protected GenericType createUncheckedReceiver()
-	{
-		return new ReceiverType();
-	}
-
-	protected BakedType createBakedReceiver()
-	{
-		return new ReceiverType();
-	}
-
-	static private class ReceiverType extends BakedType
+	static private class ReceiverType extends BaseType implements ReceiverInterface<BaseType>
 	{
 		@Override
 		public BaseType foo(final BaseType value)
@@ -136,21 +106,9 @@ public class BakedGenericTypeTest
 		}
 	}
 
-	/**
-	 * By adding a second abstract class in the inheritance, the
-	 * performance drops by an order of magnitude.
-	 */
-	static private class BakedType extends GenericType<BaseType>
+	static private interface ReceiverInterface<X>
 	{
-
-	}
-
-	static private class GenericType<X> extends BaseType
-	{
-		public X foo(final X value)
-		{
-			return value;
-		}
+		X foo(X value);
 	}
 
 	static private class BaseType

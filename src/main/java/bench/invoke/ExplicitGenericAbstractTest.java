@@ -1,4 +1,4 @@
-package bench;
+package bench.invoke;
 
 import org.openjdk.jmh.annotations.Benchmark;
 

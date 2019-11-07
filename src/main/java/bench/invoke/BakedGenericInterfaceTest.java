@@ -1,8 +1,11 @@
-package bench;
+package bench.invoke;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
-public class ExplicitGenericInterfaceTest
+/**
+ * Tests against a Type which has fully baked a Generic Abstract Method
+ */
+public class BakedGenericInterfaceTest
 {
 	@Benchmark
 	public void testExplicit()
@@ -29,7 +32,7 @@ public class ExplicitGenericInterfaceTest
 	@Benchmark
 	public void testChecked()
 	{
-		final ReceiverInterface<BaseType> x = this.createCheckedReceiver();
+		final AbstractInterface<BaseType> x = this.createCheckedReceiver();
 
 		final BaseType y = this.createObject();
 
@@ -51,11 +54,33 @@ public class ExplicitGenericInterfaceTest
 	@Benchmark
 	public void testUnchecked()
 	{
-		final ReceiverInterface x = this.createUncheckedReceiver();
+		final AbstractInterface x = this.createUncheckedReceiver();
 
 		final Object y = this.createObject();
 
 		Object z = null;
+
+		for (int i = 0; i != 1_000_000; i++)
+		{
+			if (z == y)
+			{
+				z = x.foo(y);
+			}
+			else
+			{
+				z = x.foo(y);
+			}
+		}
+	}
+
+	@Benchmark
+	public void testBaked()
+	{
+		final BakedInterface x = this.createBakedReceiver();
+
+		final BaseType y = this.createObject();
+
+		BaseType z = null;
 
 		for (int i = 0; i != 1_000_000; i++)
 		{
@@ -75,22 +100,27 @@ public class ExplicitGenericInterfaceTest
 		return new BaseType();
 	}
 
-	protected ReceiverInterface<BaseType> createCheckedReceiver()
-	{
-		return new ReceiverType();
-	}
-
-	protected ReceiverInterface createUncheckedReceiver()
-	{
-		return new ReceiverType();
-	}
-
 	protected ReceiverType createExplicitReceiver()
 	{
 		return new ReceiverType();
 	}
 
-	static private class ReceiverType extends BaseType implements ReceiverInterface<BaseType>
+	protected AbstractInterface<BaseType> createCheckedReceiver()
+	{
+		return new ReceiverType();
+	}
+
+	protected AbstractInterface createUncheckedReceiver()
+	{
+		return new ReceiverType();
+	}
+
+	protected BakedInterface createBakedReceiver()
+	{
+		return new ReceiverType();
+	}
+
+	static private class ReceiverType extends BaseType implements BakedInterface
 	{
 		@Override
 		public BaseType foo(final BaseType value)
@@ -106,7 +136,12 @@ public class ExplicitGenericInterfaceTest
 		}
 	}
 
-	static private interface ReceiverInterface<X>
+	static private interface BakedInterface extends AbstractInterface<BaseType>
+	{
+
+	}
+
+	static private interface AbstractInterface<X>
 	{
 		X foo(X value);
 	}

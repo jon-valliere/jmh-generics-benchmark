@@ -1,11 +1,11 @@
-package bench;
+package bench.invoke;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
 /**
  * Tests against a Type which has fully baked a Generic Abstract Method
  */
-public class BakedGenericInterfaceMultipleArgsTest
+public class BakedGenericTypeTest
 {
 	@Benchmark
 	public void testExplicit()
@@ -20,11 +20,11 @@ public class BakedGenericInterfaceMultipleArgsTest
 		{
 			if (z == y)
 			{
-				z = x.foo(y, y);
+				z = x.foo(y);
 			}
 			else
 			{
-				z = x.foo(y, y);
+				z = x.foo(y);
 			}
 		}
 	}
@@ -32,7 +32,7 @@ public class BakedGenericInterfaceMultipleArgsTest
 	@Benchmark
 	public void testChecked()
 	{
-		final AbstractInterface<BaseType> x = this.createCheckedReceiver();
+		final GenericType<BaseType> x = this.createCheckedReceiver();
 
 		final BaseType y = this.createObject();
 
@@ -42,11 +42,11 @@ public class BakedGenericInterfaceMultipleArgsTest
 		{
 			if (z == y)
 			{
-				z = x.foo(y, y);
+				z = x.foo(y);
 			}
 			else
 			{
-				z = x.foo(y, y);
+				z = x.foo(y);
 			}
 		}
 	}
@@ -54,7 +54,7 @@ public class BakedGenericInterfaceMultipleArgsTest
 	@Benchmark
 	public void testUnchecked()
 	{
-		final AbstractInterface x = this.createUncheckedReceiver();
+		final GenericType x = this.createUncheckedReceiver();
 
 		final Object y = this.createObject();
 
@@ -64,11 +64,11 @@ public class BakedGenericInterfaceMultipleArgsTest
 		{
 			if (z == y)
 			{
-				z = x.foo(y, y);
+				z = x.foo(y);
 			}
 			else
 			{
-				z = x.foo(y, y);
+				z = x.foo(y);
 			}
 		}
 	}
@@ -76,7 +76,7 @@ public class BakedGenericInterfaceMultipleArgsTest
 	@Benchmark
 	public void testBaked()
 	{
-		final BakedInterface x = this.createBakedReceiver();
+		final BakedType x = this.createBakedReceiver();
 
 		final BaseType y = this.createObject();
 
@@ -86,11 +86,11 @@ public class BakedGenericInterfaceMultipleArgsTest
 		{
 			if (z == y)
 			{
-				z = x.foo(y, y);
+				z = x.foo(y);
 			}
 			else
 			{
-				z = x.foo(y, y);
+				z = x.foo(y);
 			}
 		}
 	}
@@ -105,27 +105,27 @@ public class BakedGenericInterfaceMultipleArgsTest
 		return new ReceiverType();
 	}
 
-	protected AbstractInterface<BaseType> createCheckedReceiver()
+	protected GenericType<BaseType> createCheckedReceiver()
 	{
 		return new ReceiverType();
 	}
 
-	protected AbstractInterface createUncheckedReceiver()
+	protected GenericType createUncheckedReceiver()
 	{
 		return new ReceiverType();
 	}
 
-	protected BakedInterface createBakedReceiver()
+	protected BakedType createBakedReceiver()
 	{
 		return new ReceiverType();
 	}
 
-	static private class ReceiverType extends BaseType implements BakedInterface
+	static private class ReceiverType extends BakedType
 	{
 		@Override
-		public BaseType foo(final BaseType value, final BaseType bar)
+		public BaseType foo(final BaseType value)
 		{
-			if (value.id == bar.id)
+			if (value.id == this.id)
 			{
 				return value;
 			}
@@ -136,14 +136,21 @@ public class BakedGenericInterfaceMultipleArgsTest
 		}
 	}
 
-	static private interface BakedInterface extends AbstractInterface<BaseType>
+	/**
+	 * By adding a second abstract class in the inheritance, the
+	 * performance drops by an order of magnitude.
+	 */
+	static private class BakedType extends GenericType<BaseType>
 	{
 
 	}
 
-	static private interface AbstractInterface<X>
+	static private class GenericType<X> extends BaseType
 	{
-		X foo(X value, X bar);
+		public X foo(final X value)
+		{
+			return value;
+		}
 	}
 
 	static private class BaseType

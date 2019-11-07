@@ -1,11 +1,11 @@
-package bench;
+package bench.invoke;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
 /**
  * Tests against a Typed Object without Generics
  */
-public class StrictSubClassTypeTest
+public class StrictTypeTest
 {
 	@Benchmark
 	public void testType()
@@ -39,9 +39,8 @@ public class StrictSubClassTypeTest
 		return new ReceiverType();
 	}
 
-	static private class ReceiverType extends ReceiverSuper
+	static private class ReceiverType extends BaseType
 	{
-		@Override
 		public BaseType foo(final BaseType value)
 		{
 			if (value.id == this.id)
@@ -52,14 +51,6 @@ public class StrictSubClassTypeTest
 			{
 				return value;
 			}
-		}
-	}
-
-	static private class ReceiverSuper extends BaseType
-	{
-		public BaseType foo(final BaseType value)
-		{
-			return null;
 		}
 	}
 
