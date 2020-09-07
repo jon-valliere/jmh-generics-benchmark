@@ -3,17 +3,18 @@ package bench.nio;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
 import sun.misc.Unsafe;
 
-public class ByteBufferTest
+public class ByteBufferReadWriteTest
 {
 	static final int		LIMIT	= 1024 * 1024 * 2;
 
-	static final ByteBuffer	DIRECT	= ByteBuffer.allocateDirect(ByteBufferTest.LIMIT);
-	static final ByteBuffer	HEAP	= ByteBuffer.allocate(ByteBufferTest.LIMIT);
+	static final ByteBuffer	DIRECT	= ByteBuffer.allocateDirect(ByteBufferReadWriteTest.LIMIT);
+	static final ByteBuffer	HEAP	= ByteBuffer.allocate(ByteBufferReadWriteTest.LIMIT);
 
 	static final long		NATIVE;
 	static final Unsafe		UNSAFE;
@@ -22,18 +23,21 @@ public class ByteBufferTest
 	{
 		final byte x = (byte) 0x33;
 
-		while (ByteBufferTest.DIRECT.hasRemaining())
+		ByteBufferReadWriteTest.DIRECT.order(ByteOrder.nativeOrder());
+		ByteBufferReadWriteTest.HEAP.order(ByteOrder.nativeOrder());
+
+		while (ByteBufferReadWriteTest.DIRECT.hasRemaining())
 		{
-			ByteBufferTest.DIRECT.put(x);
+			ByteBufferReadWriteTest.DIRECT.put(x);
 		}
 
-		while (ByteBufferTest.HEAP.hasRemaining())
+		while (ByteBufferReadWriteTest.HEAP.hasRemaining())
 		{
-			ByteBufferTest.HEAP.put(x);
+			ByteBufferReadWriteTest.HEAP.put(x);
 		}
 
-		UNSAFE = ByteBufferTest.get_unsafe();
-		NATIVE = ByteBufferTest.UNSAFE.allocateMemory(ByteBufferTest.LIMIT);
+		UNSAFE = ByteBufferReadWriteTest.get_unsafe();
+		NATIVE = ByteBufferReadWriteTest.UNSAFE.allocateMemory(ByteBufferReadWriteTest.LIMIT);
 	}
 
 	static final Unsafe get_unsafe()
@@ -42,11 +46,11 @@ public class ByteBufferTest
 
 		try
 		{
-			s = ByteBufferTest.loadUnsafe("theUnsafe"); // JDK
+			s = ByteBufferReadWriteTest.loadUnsafe("theUnsafe"); // JDK
 
 			if (s == null)
 			{
-				s = ByteBufferTest.loadUnsafe("THE_ONE"); // Android
+				s = ByteBufferReadWriteTest.loadUnsafe("THE_ONE"); // Android
 
 				if (s == null)
 				{
@@ -83,13 +87,13 @@ public class ByteBufferTest
 	@Benchmark
 	public void testUnsafeWrite()
 	{
-		final Unsafe u = ByteBufferTest.UNSAFE;
+		final Unsafe u = ByteBufferReadWriteTest.UNSAFE;
 
-		final long t = ByteBufferTest.NATIVE;
+		final long t = ByteBufferReadWriteTest.NATIVE;
 
 		byte x = (byte) 0xF3;
 
-		for (int i = 0; i < ByteBufferTest.LIMIT; i++)
+		for (int i = 0; i < ByteBufferReadWriteTest.LIMIT; i++)
 		{
 			u.putByte(i + t, x++);
 		}
@@ -98,11 +102,11 @@ public class ByteBufferTest
 	@Benchmark
 	public void testArrayWrite()
 	{
-		final byte[] t = ByteBufferTest.HEAP.array();
+		final byte[] t = ByteBufferReadWriteTest.HEAP.array();
 
 		byte x = (byte) 0xF3;
 
-		for (int i = 0; i < ByteBufferTest.LIMIT; i++)
+		for (int i = 0; i < ByteBufferReadWriteTest.LIMIT; i++)
 		{
 			t[i] = x++;
 		}
@@ -111,7 +115,7 @@ public class ByteBufferTest
 	@Benchmark
 	public void testDirectByteBufferWrite()
 	{
-		final ByteBuffer t = ByteBufferTest.DIRECT;
+		final ByteBuffer t = ByteBufferReadWriteTest.DIRECT;
 
 		t.clear();
 
@@ -126,7 +130,7 @@ public class ByteBufferTest
 	@Benchmark
 	public void testDirectByteBufferWriteShort()
 	{
-		final ByteBuffer t = ByteBufferTest.DIRECT;
+		final ByteBuffer t = ByteBufferReadWriteTest.DIRECT;
 
 		t.clear();
 
@@ -141,7 +145,7 @@ public class ByteBufferTest
 	@Benchmark
 	public void testDirectByteBufferWriteInteger()
 	{
-		final ByteBuffer t = ByteBufferTest.DIRECT;
+		final ByteBuffer t = ByteBufferReadWriteTest.DIRECT;
 
 		t.clear();
 
@@ -156,7 +160,7 @@ public class ByteBufferTest
 	@Benchmark
 	public void testHeapByteBufferWrite()
 	{
-		final ByteBuffer t = ByteBufferTest.HEAP;
+		final ByteBuffer t = ByteBufferReadWriteTest.HEAP;
 
 		t.clear();
 
@@ -171,7 +175,7 @@ public class ByteBufferTest
 	@Benchmark
 	public void testHeapByteBufferWriteShort()
 	{
-		final ByteBuffer t = ByteBufferTest.HEAP;
+		final ByteBuffer t = ByteBufferReadWriteTest.HEAP;
 
 		t.clear();
 
@@ -186,7 +190,7 @@ public class ByteBufferTest
 	@Benchmark
 	public void testHeapByteBufferWriteInteger()
 	{
-		final ByteBuffer t = ByteBufferTest.HEAP;
+		final ByteBuffer t = ByteBufferReadWriteTest.HEAP;
 
 		t.clear();
 
@@ -201,11 +205,11 @@ public class ByteBufferTest
 	@Benchmark
 	public byte testArrayRead()
 	{
-		final byte[] t = ByteBufferTest.HEAP.array();
+		final byte[] t = ByteBufferReadWriteTest.HEAP.array();
 
 		byte x = 0;
 
-		for (int i = 0; i < ByteBufferTest.LIMIT; i++)
+		for (int i = 0; i < ByteBufferReadWriteTest.LIMIT; i++)
 		{
 			x += t[i];
 		}
@@ -216,13 +220,13 @@ public class ByteBufferTest
 	@Benchmark
 	public byte testUnsafeRead()
 	{
-		final Unsafe u = ByteBufferTest.UNSAFE;
+		final Unsafe u = ByteBufferReadWriteTest.UNSAFE;
 
-		final long t = ByteBufferTest.NATIVE;
+		final long t = ByteBufferReadWriteTest.NATIVE;
 
 		byte x = 0;
 
-		for (int i = 0; i < ByteBufferTest.LIMIT; i++)
+		for (int i = 0; i < ByteBufferReadWriteTest.LIMIT; i++)
 		{
 			x += u.getByte(i + t);
 		}
@@ -233,7 +237,7 @@ public class ByteBufferTest
 	@Benchmark
 	public byte testDirectByteBufferRead()
 	{
-		final ByteBuffer t = ByteBufferTest.DIRECT;
+		final ByteBuffer t = ByteBufferReadWriteTest.DIRECT;
 
 		t.clear();
 
@@ -250,7 +254,7 @@ public class ByteBufferTest
 	@Benchmark
 	public short testDirectByteBufferReadShort()
 	{
-		final ByteBuffer t = ByteBufferTest.DIRECT;
+		final ByteBuffer t = ByteBufferReadWriteTest.DIRECT;
 
 		t.clear();
 
@@ -267,7 +271,7 @@ public class ByteBufferTest
 	@Benchmark
 	public int testDirectByteBufferReadInteger()
 	{
-		final ByteBuffer t = ByteBufferTest.DIRECT;
+		final ByteBuffer t = ByteBufferReadWriteTest.DIRECT;
 
 		t.clear();
 
@@ -284,7 +288,7 @@ public class ByteBufferTest
 	@Benchmark
 	public byte testHeapByteBufferRead()
 	{
-		final ByteBuffer t = ByteBufferTest.HEAP;
+		final ByteBuffer t = ByteBufferReadWriteTest.HEAP;
 
 		t.clear();
 
@@ -301,7 +305,7 @@ public class ByteBufferTest
 	@Benchmark
 	public short testHeapByteBufferReadShort()
 	{
-		final ByteBuffer t = ByteBufferTest.HEAP;
+		final ByteBuffer t = ByteBufferReadWriteTest.HEAP;
 
 		t.clear();
 
@@ -318,7 +322,7 @@ public class ByteBufferTest
 	@Benchmark
 	public int testHeapByteBufferReadInteger()
 	{
-		final ByteBuffer t = ByteBufferTest.HEAP;
+		final ByteBuffer t = ByteBufferReadWriteTest.HEAP;
 
 		t.clear();
 
@@ -335,11 +339,11 @@ public class ByteBufferTest
 	@Benchmark
 	public byte testArrayMixed()
 	{
-		final byte[] t = ByteBufferTest.HEAP.array();
+		final byte[] t = ByteBufferReadWriteTest.HEAP.array();
 
 		byte x = 0;
 
-		for (int i = 0; i < ByteBufferTest.LIMIT;)
+		for (int i = 0; i < ByteBufferReadWriteTest.LIMIT;)
 		{
 			x += t[i++];
 
@@ -352,13 +356,13 @@ public class ByteBufferTest
 	@Benchmark
 	public byte testUnsafeMixed()
 	{
-		final Unsafe u = ByteBufferTest.UNSAFE;
+		final Unsafe u = ByteBufferReadWriteTest.UNSAFE;
 
-		final long t = ByteBufferTest.NATIVE;
+		final long t = ByteBufferReadWriteTest.NATIVE;
 
 		byte x = 0;
 
-		for (int i = 0; i < ByteBufferTest.LIMIT;)
+		for (int i = 0; i < ByteBufferReadWriteTest.LIMIT;)
 		{
 			x += u.getByte(t + i++);
 
@@ -371,7 +375,7 @@ public class ByteBufferTest
 	@Benchmark
 	public byte testDirectByteBufferMixed()
 	{
-		final ByteBuffer t = ByteBufferTest.DIRECT;
+		final ByteBuffer t = ByteBufferReadWriteTest.DIRECT;
 
 		t.clear();
 
@@ -390,7 +394,7 @@ public class ByteBufferTest
 	@Benchmark
 	public byte testHeapByteBufferMixed()
 	{
-		final ByteBuffer t = ByteBufferTest.HEAP;
+		final ByteBuffer t = ByteBufferReadWriteTest.HEAP;
 
 		t.clear();
 
